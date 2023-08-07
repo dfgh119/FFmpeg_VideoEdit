@@ -1,6 +1,34 @@
 # FFmpeg_VideoEdit
 Extract images frame by frame from video using FFmpeg
 
+## VideoEdit for window
+### Mac(Unix 기반)으로 작업시 grep 명령어 등 리눅스 명령어가 동작하였지만 Window에서는 작동하지 않음
+```
+# 초당프레임 구하는 코드 
+    # 잘라낸 영상의 총프레임을 영상 길이로 나눔
+    # 영상길이 = length_v = Total_time초
+    # 리눅스
+    # length_v = subprocess.check_output(f"ffmpeg -i {d} 2>&1 | grep Duration | cut -d ' ' -f 4 | sed s/,//"
+    # , shell=True, text=True)
+    # time_video = length_v.split(':')
+    # Hour_Alarm = int(time_video[0])
+    # Min_Alarm = int(time_video[1])
+    # Second_Alarm = float(time_video[2])
+    # Total_time = Hour_Alarm*60*60 + Min_Alarm*60 + Second_Alarm
+```
+### Window에서도 작동하게 코드 수정
+```
+    # 윈도우
+    # 영상 길이 반환
+    length_v = subprocess.check_output(f'ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {xml_file}', shell=True, text=True)
+    Total_time = float(length_v)
+    
+    #총 프레임 구하는 코드 
+    Frame_v = subprocess.check_output(f"ffprobe -v error -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nokey=1:noprint_wrappers=1 {d}", shell=True, text=True)
+    #초당 프레임 Fps
+    Fps = float(Frame_v)/Total_time
+```
+
 ### 필요라이브러리
 ```
 from email.mime import image
